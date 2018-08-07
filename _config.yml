@@ -1,22 +1,22 @@
-title: 王小俊
+title: 孔维图
 subtitle: 个人站
 description: 欢迎来到我的个人站~
 # 头像里面的标题
-avatarTitle: Grimxiaojun
+avatarTitle: kongweitu
 # 头像里面的描述
 avatarDesc: 将成为优秀程序员的我
-url: "http://grimxiaojun.github.io"
+url: "http://kongweitu.github.io"
 
 comment:
     # disqus: leopard
-    duoshuo: grimxiaojun
+    duoshuo: kongweitu
 
 # Social
 social:
     weibo: ----
-    github: grimxiaojun
+    github: kongweitu
     # twitter: 
-    mail: swdwangjie@outlook.com
+    mail: kwt_job@163.com
 
 ga:
     id: UA-96239281-2
