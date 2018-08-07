@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "牛客网 剑指offer 链表中倒数第k个结点"
+title:  "Java代码优化"
+tags: Java代码优化
 
 ---
 时间限制：1秒空间限制：32768K热度指数：15692
