@@ -1,63 +1,40 @@
 ---
 layout: post
-title:  "牛客网 剑指offer 二叉搜索树与双向链表"
+title:  "程序员健康常识"
 tags: 生活点滴
 
 ---
 时间限制：1秒空间限制：32768K热度指数：6676
 
-**算法知识视频讲解
+**程序员健康常识
 
 ## 题目描述
 
-输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+程序员健康面临的5大问题
 
+说实在的，程序员是一门苦差事，虽然工资待遇相对其他行业略高一点，但是工作节奏和工作压力却远远大于大部分行业。然而，面对这样一个客观事实，仍有很大一部分从事网站开发的程序员没有良好的工作方法和生活方式，让自己长期处在亚健康的状态，这是让人非常心痛的。
 
+    本文列出了几件毁掉程序员健康的事情，希望你可以尽量避免它们，写健康的程序代码。
 
-题解：双向链表，先通过中序遍历获得顺序
+一、熬夜
 
-然后遍历vector得到右边，然后再往左遍历
+    很多程序员将熬夜变成了生活习惯，还口口声声解释“程序员只有在晚上效率才高”，这是非常扯淡的理论。有人将程序员做下图的类比，虽然比较贴切，但这种方式对你的健康伤害是最大的。建议你尝试一下晚上10点睡觉，早上6点起来工作的作息方式，也许会事半功倍。
 
-代码如下：
+二、久坐
 
-```c++
-/*
-struct TreeNode {
-	int val;
-	struct TreeNode *left;
-	struct TreeNode *right;
-	TreeNode(int x) :
-			val(x), left(NULL), right(NULL) {
-	}
-};*/
-class Solution {
-public:
-    vector<TreeNode*>v;
-    TreeNode* Convert(TreeNode* pRootOfTree)
-    {
-        if(pRootOfTree==NULL)return NULL;    
-        inordered(pRootOfTree);
-        for(int i=0;i<v.size();++i){
-            if(i==0){
-                 pRootOfTree=v[i];
-            }else{
-                pRootOfTree->right=v[i];
-                pRootOfTree=pRootOfTree->right;
-            }
-        }
-        for(int i=v.size()-2;i>=0;--i){
-                pRootOfTree->left=v[i];
-                pRootOfTree=pRootOfTree->left;
-            
-        }
-        return pRootOfTree;
-    }
-    void inordered(TreeNode* pRootOfTree){
-        if(pRootOfTree==NULL)return;
-        inordered(pRootOfTree->left);
-        v.push_back(pRootOfTree);
-        inordered(pRootOfTree->right);          
-    }
-};
-```
+    有些程序员在电脑面前一坐就是一天，中间除了吃饭上厕所外，基本不起来动动。这是非常不好的习惯，时间久了，很容易得肩周炎、颈椎病，到时候后悔就晚了。建议每坐一个小时就起来动10分钟，主要是转转手臂和脖子。
+
+三、外卖和泡面
+
+    很多程序员在饮食上也非常不注重健康，上班的时候为了贪图方便经常叫一些外卖，更厉害的是直接搞一桶方便面来做午餐。这里建议大家中午出去吃，荤素搭配，再可以弄点水果。
+
+点击查看源网页
+
+四、缺乏锻炼
+
+    你是不是经常会觉得浑身无力，握不紧双拳？还有是不是经常会觉得困乏，尤其是到了春夏之际？如果这样，那说明你该锻炼了，这里建议在工作日下班后做一些简单的球类运动，乒乓球、羽毛球什么的都不错，锻炼的同时说不定还能结识一些妹子。
+
+五、用眼过度
+
+    IT公司的员工的体检报告中大部分程序员都患有“慢性结膜炎”，当然对于这个病并不是长时间对着电脑引起的，但是用眼过度也会加剧“慢性结膜炎”的恶化。这里建议大家平时准备防止眼干的眼药水，如果确定是结膜炎的话，还要及时去医院就诊。另外电脑的背景可以设成绿色，这样对眼睛也能起到一定的保护作用。
 
