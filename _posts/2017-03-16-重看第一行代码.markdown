@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "第一行代码第二版"
+tags: 数学结构和算法
 
 ---
 
