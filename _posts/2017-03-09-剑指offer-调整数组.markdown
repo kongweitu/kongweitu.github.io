@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "牛客网 剑指offer 调整数组"
+title:  "Java高并发模板"
+tags: Java高并发知识点。
 
 ---
 时间限制：1秒空间限制：32768K热度指数：15060
