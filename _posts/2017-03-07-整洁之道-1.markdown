@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Java代码整洁之道"
-tags: Java代码优化
+tags:  Java代码优化
 
 ---
 # 题目 JAVA代码整洁之道
