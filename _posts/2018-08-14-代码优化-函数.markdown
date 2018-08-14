@@ -1,0 +1,167 @@
+---
+layout: post
+title:  "cleaning code"
+tags: 代码优化
+
+---
+时间限制：1秒空间限制：32768K热度指数：13590
+
+本题知识点：代码优化之函数。
+
+①无副作用，一个函数应该功能单一，一目了然。总而言之就是函数应该只做一件事，副作用就是它
+在做一件事的时候还会做被隐藏的事，有时，它会对自己类中的变量做出未能预期的改动，有时它会
+把变量搞成向函数传递的参数或是系统全局变量，无论哪种情况都是具有破坏性的，会导致古怪的时
+序性耦合及顺序依赖。
+		如以下例子，该函数使用标准算法来匹配userName和password,如果匹配成功返回true，如果
+失败，返回false，但是它有副作用，分析分析副作用在哪？
+		public class UserValidate{
+			private Cryptographer cryptographer;
+
+			public boolean checkPassword(String userName, String password){
+				User user = UserGateway.findByName(userName);
+				if(user!=User.NULL){
+					String codedPhrase = user.getPhraseEncodeByPassword();
+					String phrase  = cryptographer.decltype(codedPhrase,password);
+					if("Valid password".equals(phrase)){
+						Session.initialize();
+						return true;
+					}
+				}
+				return false;
+
+			}
+		}
+		副作用就是对于Session.initialize()函数的调用，这个函数顾名思义就是检查密码，但是它
+	加入了会话的初始化，所以当有人光看函数名时，想要检查用户的有效性时，就会冒抹除现有会话
+	数据的风险，
+	这次副作用就是我们把Session的初始化放在了判断里，只有验证正确的时候，会话才会开启，如
+	果验证不通过会话就不会开启，这就叫做时序耦合性。
+
+--------------------------------------------------------------------------------
+	 ②输出参数问题
+	 参数多数会被看做函数的输入，但是我们一定被用作输出而非输入的的参数迷惑过，例如：
+	 appendFoot(s);
+	 这个函数是什么意思呢，我们要对参数s做什么操作呢，让人很疑惑，我们还必须去检查它的函数
+	 签名。这又中断了我们的思路，所以我们应该避免使用参数输出，如果函数要修改某种状态，就修
+	 改对象的状态吧。
+
+	 -----------------------------------------------------------------------------
+
+	 ③分隔指令和询问
+
+	 函数要做什么事和要回答什么事，但二者不可得兼，函数应该修改某对象的状态或是返回对象的有
+效信息，两者都干通常导致混乱，如下例：
+		public boolean set(String attribute,String value);
+		该函数设置某个指定属性，如果成功返回true，如果不存在那个属性则返回false，这样就导致
+		了一下语句：
+		if (set("username","unclebob"))...
+		从读者的角度考虑，它是问username属性值是否之前已设置为unclebob,还是在问username的
+	属性值是否成功设置为unclebob,难以判断它的含义，是动词或者是形容词不清楚。
+	我们应该把函数的指令和询问分开。例：
+			if（attributeExists("username")）{//先询问
+				setAttributeExists("username","unclebob");
+
+			}
+
+
+
+			--------------------------------------------------------------------------
+			④使用异常代替返回错误码
+
+			从指令式函数返回错误码轻轻微违反了指令和询问分隔的规则，它鼓励了在if语句判断中把指
+	令当做表达式用，例：
+			if（deletePage(page)==E_OK){}；
+	这不会引起动词形容词的混淆，但是它会导致更深层次的嵌套结构，当返回错误码时，就是在要求
+	使用者立刻处理错误。
+			if(deletePage(page)==E_OK){
+				if(registry.deleteFererce(page.name)==E_OK){
+					if(configKeys.deleteKey(page.name.key==E_OK)){
+						logger.log("page deleted");
+					}else{
+						logger.log("configKeys not deleted");
+					}else{
+						logger.log（"deleteFererce from registry failed"）;
+					}
+				}else{
+					logger.log("delete failed");
+					return E_ERROR;
+				}
+			}
+另一方面，如果使用异常代替返回错误码，错误处理代码就能从主路径代码中分离出来的到简化。
+		try{
+			deletePage(page);
+			registry.deleteFererce(page.name);
+			configKeys.deleteKey(page.name.makeKey());
+		}catch(Exception){
+			logger.log(e.getMessage());
+
+		}
+
+
+		----------------------------------------------------------------------------
+
+		⑤抽离try/catch代码块
+
+		 Try/Catch代码块丑陋不堪，它们搞乱了代码结构，把错误处理和正常流程混为一谈，最好把
+		 try和catch代码块的主体部分抽离出来，另外形成函数。例：
+		 public void delete(Page page){
+			 try{
+				 deletePageAndAllReferences( page);
+			 }catch(Exception e){
+				 logError(e);
+
+			 }
+		 }
+
+		 public void deletePageAndAllReferences(Page page)rhrows Exception{
+			 deletePage(page);
+			 registry.deleteReference(page.name);
+			 configKeys.deleteKey(page.name.makeKey());
+		 }
+		 private void logError(Exception e){
+			 logger.log(e.getMessage);
+		 }
+		 这里就很好的阐释了，一个函数只负责一个功能，delet函数只与错误处理有关，deletePage
+	AndAllReferences只与删除page这个功能有关，这样美妙的分隔，代码更容易理解和修改。
+
+
+	-----------------------------------------------------------------------------
+	⑥错误处理就是一件事
+			函数应该只做一件事，错误处理就是一件事。因此错误处理的函数不该做其他事，这就意味着
+	如果关键字try在某个函数中出现，它就该是这个函数的第一个单词，而且catch/finally代码块
+	也不该有其他内容。
+
+	------------------------------------------------------------------------------
+
+	⑦Error.java依赖磁铁
+	返回错误码通常暗示某处有个类或者枚举，定义了所有的错误码；例
+	public enum Error{
+		ok;
+		INVALLD;
+		NO_SUCF;
+		LOCKED;
+		OUT_OF_RESOURCES;
+	}
+	这样的类就是一块依赖磁铁，其他很多类都得导入和使用它，当Error类修改时，所有其他的类都
+	需要重新编译和部署，这对Error类造成了负面压力，程序员不愿增加新的错误代码，因为这样他
+	门就得重新构建和部署所有东西，于是他们就复用旧的错误码，而不用添加新的。
+			使用异常替代错误码，新异常就可以从异常类派生出来，无需重新编译或重新部署。
+
+
+--------------------------------------------------------------------------------
+⑧结构化编程
+
+有些程序员遵循结构化编程规则：
+	每个函数，函数中的每个代码都应该只有一个入口，一个出口。
+
+
+	-----------------------------------------------------------------------------
+
+	⑨如何写出复合这些规则的函数
+		写代码和写别的东西很像，写论文时，你就是想到什么写什么，然后再去打磨它，初稿也许粗糙
+		和无序，你就得斟酌推敲，直到到达你心目中的样子。
+		我写函数时，一开始都冗长而复杂，有太多的缩进和嵌套循环，有过长的参数列表，名称是随意
+		取得，也会有重复的代码。不过我会配上一套单元测试，覆盖每行丑陋的代码。
+		然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法，有时我还拆散
+		类，同时保持测试通过。
+		最后，好代码都是一次次的打磨出来的，一开始就写出来，我想没人做得到。
