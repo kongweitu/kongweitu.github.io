@@ -1,0 +1,69 @@
+---
+layout: post
+title:  "clean code 之注解"
+tags: 代码优化
+
+---
+
+注释。
+
+关于注释的一段经典评价：
+
+
+  什么也比不上放置良好的注释来的有用，什么也不会比乱七八糟的注释更有本事搞乱一个模块，
+什么也不会比陈旧，提供错误信息的注释更有破坏性。
+
+  若是编程语言有足够的表达力，或者我们长于用这些语言来表达意图，那就根本不需要注释。
+
+
+  ① 我们对注释应有的态度
+
+      首先我们要明白注释是怎么出现的，它为了弥补我们用代码表达目的时遭遇的失败，能用代码表达，就用代码去表达你的意图。我们为什么不提倡使用注释呢，因为注释会撒谎，也不是总是如此或是故意如此，但是出现的太频繁，注释存在的越久，就离其所描述的代码越远，越来越变得全然错误，原因很简单，程序员总是很不愿意维护注释。
+      代码在变动，在演化，从这里迁移到那里，彼此分离或者有时又合到一处，但是注释不总是随之变动，注释常常和所描述的代码分割开来，变得越来越不准确，程序员应当负责将注释保持可维护，有关联，高准确性，我同意这种说法，但是我不建议程序员将过多精力放在这里，程序员应该将主要精力放在写清楚代码上，我们尽量能写出清楚代码，就少用注释。
+
+  ②注释不能美化糟糕的代码
+    我们常见的写注释的动机之一就是糟糕代码的存在，糟糕代码令人困扰，乱七八糟，让人难以明白。与其花时间写注释，不如花时间去清洁那堆糟糕的代码。
+
+  ③好注释的几种方式
+  法律信息
+    有时，公司代码规范要求编写与法律有关的注释。IDE会自动卷起这些注释
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+    对意图的解释。
+    有时候稍微解释一下，自己某段程序准备做什么操作。
+
+    提供信息的注释
+
+// 格式化匹配的  kk.mm.ss EEE, MMM dd, yyyy
+Pattern timeMatcher = Pattern.compile(
+"\\d*:\\d*:\\d* \\w*, \\w* \\d*, \\d*"  );
+
+也可以把这段代码移动到某个时期和时间格式的类中，可能会更好和更清晰。
+
+    警示
+    // 除非你必须要杀掉某些东西，否则则不要运行这段程序
+
+    TODO 注释
+    // TODO是一种程序员认为应该做，但是由于某些原因目前还没有做的工作。
+    目前，大多数好IDE都提供了特别的手段来定位所有的TODO注释。
+
+    说明重要性
+    // 本次操作非常重要，它去除了字符串两边的空格
+
+如果你决定写注释，那么就花必要的时间确保写出最好的注释。
